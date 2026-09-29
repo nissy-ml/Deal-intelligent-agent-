@@ -1,4 +1,18 @@
+from agents.deal_historian import DealHistorian
+from agents.executive_briefer import ExecutiveBriefer
+from agents.objection_coach import ObjectionCoach
+from agents.pattern_miner import PatternMiner
+from agents.risk_predictor import RiskPredictor
+
+
 class AgentOrchestrator:
+
+    def __init__(self):
+        self.deal_historian = DealHistorian()
+        self.executive_briefer = ExecutiveBriefer()
+        self.objection_coach = ObjectionCoach()
+        self.pattern_miner = PatternMiner()
+        self.risk_predictor = RiskPredictor()
 
     async def handle_query(
         self,
@@ -6,16 +20,22 @@ class AgentOrchestrator:
         deal_id
     ):
 
+        query = query.lower()
+
         if "risk" in query:
-            return await risk_predictor.run()
+            return await self.risk_predictor.run()
 
         if "objection" in query:
-            return await objection_coach.run()
+            return await self.objection_coach.run()
 
         if "brief" in query:
-            return await executive_briefer.run()
+            return await self.executive_briefer.generate_brief(
+                deal_id
+            )
 
         if "history" in query:
-            return await deal_historian.run()
+            return await self.deal_historian.retrieve_history(
+                deal_id
+            )
 
-        return await pattern_miner.run()
+        return await self.pattern_miner.run()
