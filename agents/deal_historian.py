@@ -25,18 +25,45 @@ Outputs:
 - Searchable memories
 """
 
+from services.deal_memory import retain_memory, recall_memory
+
+
 class DealHistorian:
+
     def __init__(self):
         self.agent_name = "Deal Historian"
 
-    def capture_interaction(self, interaction):
-        pass
+    async def capture_interaction(self, interaction):
+
+        await retain_memory(
+            str(interaction)
+        )
+
+        return {
+            "status": "stored",
+            "interaction": interaction
+        }
 
     def update_timeline(self, deal_id):
-        pass
+        return {
+            "deal_id": deal_id,
+            "status": "timeline_updated"
+        }
 
-    def store_memory(self, memory):
-        pass
+    async def store_memory(self, memory):
 
-    def retrieve_history(self, deal_id):
-        pass
+        await retain_memory(
+            str(memory)
+        )
+
+        return {
+            "status": "memory_saved"
+        }
+
+    async def retrieve_history(self, deal_id):
+
+        memories = await recall_memory(
+            f"Deal ID {deal_id}"
+        )
+
+        return memories
